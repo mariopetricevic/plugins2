@@ -6,7 +6,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
-	"github.com/sparrc/go-ping"
+	"github.com/go-ping/ping"
 )
 type customFilterPlugin struct{
 	handle framework.Handle
