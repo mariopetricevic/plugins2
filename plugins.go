@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	"fmt"
 	"time"
 	"context"
 	v1 "k8s.io/api/core/v1"
@@ -51,6 +52,7 @@ func (p *customFilterPlugin) Filter(ctx context.Context, state *framework.CycleS
 		}
 
 		if latency < minLatency {
+			fmt.Println("node:", node.Node().Name + " latency: ", latency );
 			minLatency = latency
 			closestNode = node.Node().Name
 		}
