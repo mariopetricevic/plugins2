@@ -32,6 +32,10 @@ func (s *customFilterPlugin) PreFilter(ctx context.Context, pod *v1.Pod) *framew
 
 
 func (p *customFilterPlugin) Filter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
+	 // Provjerite je li nodeInfo nil
+    	if nodeInfo == nil || nodeInfo.Node() == nil {
+        	return framework.NewStatus(framework.Error, "NodeInfo or Node is nil")
+    	}
 	// Implementirajte logiku filtriranja čvorova ovdje
 	// Učitajte sve čvorove
 	nodes, err := p.handle.SnapshotSharedLister().NodeInfos().List()
@@ -39,30 +43,40 @@ func (p *customFilterPlugin) Filter(ctx context.Context, state *framework.CycleS
 		return framework.NewStatus(framework.Error, "Failed to list nodes")
 	}
 
+	fmt.Println("Ovdje1" );
 	// Inicijalizirajte najbliži čvor i minimalnu latenciju
 	var closestNode string
 	var minLatency time.Duration = time.Duration(1<<63 - 1) // Postavljanje maksimalne vrijednosti za usporedbu
 
 	// Pronađite najbliži čvor koristeći ping
 	for _, node := range nodes {
+		fmt.Println("Ovdje2" );
 		if node.Node() == nil || len(node.Node().Status.Addresses) == 0 {
+			fmt.Println("Ovdje3" );
             		continue
         	}
+		fmt.Println("Ovdje4" );
 		ip := node.Node().Status.Addresses[0].Address
+		fmt.Println("Ovdje5" );
 		latency, err := pingNode(ip)
+		fmt.Println("Ovdje6" );
 		if err != nil {
+			fmt.Println("Ovdje7" );
 			return framework.NewStatus(framework.Error, "Failed to ping node")
 		}
 
+		fmt.Println("Ovdje8" );
 		if latency < minLatency {
+			fmt.Println("Ovdje9" );
 			fmt.Println("node:", node.Node().Name + " latency: ", latency );
 			minLatency = latency
 			closestNode = node.Node().Name
 		}
 	}
-
+	fmt.Println("Ovdje10" );
 	// Ako je trenutni čvor najbliži, postavite status na Success
 	if nodeInfo.Node().Name == closestNode {
+		fmt.Println("Ovdje11" );
 		return framework.NewStatus(framework.Success)
 	}
 
