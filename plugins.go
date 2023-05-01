@@ -45,6 +45,9 @@ func (p *customFilterPlugin) Filter(ctx context.Context, state *framework.CycleS
 
 	// Pronađite najbliži čvor koristeći ping
 	for _, node := range nodes {
+		if node.Node() == nil || len(node.Node().Status.Addresses) == 0 {
+            		continue
+        	}
 		ip := node.Node().Status.Addresses[0].Address
 		latency, err := pingNode(ip)
 		if err != nil {
