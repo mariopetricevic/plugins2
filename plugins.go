@@ -40,6 +40,7 @@ func (p *customFilterPlugin) Filter(ctx context.Context, state *framework.CycleS
 	// Učitajte sve čvorove
 	nodes, err := p.handle.SnapshotSharedLister().NodeInfos().List()
 	if err != nil {
+		fmt.Println("error loading nodes.");
 		return framework.NewStatus(framework.Error, "Failed to list nodes")
 	}
 
